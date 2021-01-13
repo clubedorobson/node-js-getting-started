@@ -7,7 +7,7 @@ const { JSDOM } = require("jsdom");
 const { window } = new JSDOM("");
 const $ = require("jquery")(window);
 const logger = require("logger").createLogger('development.log');
-const { Pool } = require('pg');
+const { Pool, ClientBase } = require('pg');
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
@@ -25,7 +25,7 @@ express()
   .get('/db', async (req, res) => {
     try {
       const client = await pool.connect();
-      const result = await client.query('SELECT * FROM test_table');
+      const result = await client.query('SELECT * FROM jogadores');
       const results = { 'results': (result) ? result.rows : null };
       res.render('pages/db', results);
       client.release();
@@ -35,9 +35,48 @@ express()
     }
   })
   .get('/proclubs', async (req, res) => {
-    axios.get('https://www.ea.com/pt-br/games/fifa/fifa-21/pro-clubs/ps4-xb1-pc/overview?clubId=6703918&platform=ps4')
-      .then(response => {
-        logger.warn(response)
+    let clubId = 6703918
+    let config = {
+      headers: {
+        "Host": "proclubs.ea.com",
+        "Accept": "application/json",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Accept-Encoding": "gzip, deflate, br",
+        "content-type": "application/json",
+        "Origin": "https://www.ea.com",
+        "Connection": "keep-alive",
+        "Referer": `https://www.ea.com/pt-br/games/fifa/fifa-21/pro-clubs/ps4-xb1-pc/overview?clubId=${clubId}&platform=ps4`
+      },
+      params: {
+        clubIds: clubId
+      }
+    }
+
+    axios.get('https://proclubs.ea.com/api/fifa/clubs/info?platform=ps4', config)
+      .then(async response => {
+
+        const clubData = response.data[clubId]
+        const post = {
+          clubId: clubData.clubId,
+          name: clubData.name,
+          regionId: clubData.regionId,
+          teamId: clubData.teamId
+        }
+
+        let cols = [];
+        let inputs = [];
+        for (let k in post) {
+          cols.push(k);
+          inputs.push(k.value);
+        }
+        const client = await pool.connect();
+        let query = `INSERT INTO CLUBES (${cols.toString()} values (${inputs.toString()}))`
+        console.log(query)
+        const result = await client.query("insert", [post])
+        //const result = await client.query(`INSERT INTO CLUBES (${cols.toString()}) values (${inputs.toString()}))`)
+        console.log(result)
+        logger.warn(jogador)
+        console.log(jogador)
         console.log(response.data.url);
         console.log(response.data.explanation);
       })

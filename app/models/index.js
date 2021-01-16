@@ -4,20 +4,11 @@ const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
+const config = require('../../config/config');
 const db = {};
+//const sequelize = new Sequelize(config)
 
-let sequelize;
-console.log(config.use_env_variable)
-console.log(process.env[config.use_env_variable])
-/*if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
-}*/
-
-sequelize = new Sequelize("postgres://sscnjaewpvbmny:920150653076e2d6eaa77be1292c6102c23f0c38c5d9642058e21b254bb3d3e1@ec2-3-231-48-230.compute-1.amazonaws.com:5432/da175l8b6ul1l5")
+const sequelize = new Sequelize(config)
 
 
 fs

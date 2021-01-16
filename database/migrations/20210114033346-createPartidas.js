@@ -8,21 +8,29 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    return queryInterface.createTable('Clubes', {
-      clubId: {
+    return queryInterface.createTable('Partidas', {
+      matchId: {
         allowNull: false,
         primaryKey: true,
-        type: Sequelize.DataTypes.INTEGER,
-      },
-      name: {
-        allowNull: false,
         type: Sequelize.DataTypes.STRING,
       },
-      regionId: {
+      timestamp: {
+        allowNull: false,
+        type: Sequelize.DataTypes.INTEGER,
+      },
+      homeClub: {
         allowNull: false,
         type: Sequelize.DataTypes.STRING
       },
-      teamId: {
+      awayClub: {
+        allowNull: false,
+        type: Sequelize.DataTypes.STRING,
+      },
+      homeGoals: {
+        allowNull: false,
+        type: Sequelize.DataTypes.STRING,
+      },
+      awayGoals: {
         allowNull: false,
         type: Sequelize.DataTypes.STRING,
       },
@@ -46,6 +54,6 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    return queryInterface.dropTable('Clubes');
+    return queryInterface.dropTable('Partidas');
   }
 };

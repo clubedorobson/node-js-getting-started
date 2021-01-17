@@ -1,3 +1,0 @@
-create table jogadores (name text,gamesPlayed text,winRate text,goals text,assists text,cleanSheetsDef text,cleanSheetsGK text,shotSuccessRate text,passesMade text,passSuccessRate text,tacklesMade text, tackleSuccessRate text,proName text,proPos text,proStyle text,proHeight text,proNationality text,proOverall text,manOfTheMatch text,redCards text,favoritePosition text);
-
-insert into jogadores values ('bastospereira', '240', '52', '168', '207', '0', '0', '31', '9996', '85', '731', '29', 'Nicotina', '25', '-1', '170', '61', '88', '57', '3', 'forward');

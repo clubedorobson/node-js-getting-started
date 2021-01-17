@@ -24,11 +24,13 @@ module.exports = (sequelize, DataTypes) => {
   
     ClubesPartidas.associate = (models) => {
         ClubesPartidas.belongsTo(models.Partidas, {
-            foreignKey : 'matchId'
+            foreignKey : 'matchId',
+            as: 'clubesPartidasPartidas'
         });
 
         ClubesPartidas.belongsTo(models.Clubes, {
-            foreignKey: 'clubId'
+            foreignKey: 'clubId',
+            as: 'clubesPartidasClubes'
         })
     }
 

@@ -3,57 +3,33 @@ const path = require('path')
 const PORT = process.env.PORT || 5000
 const cool = require('cool-ascii-faces');
 const axios = require('axios');
-const { JSDOM } = require("jsdom");
-const { window } = new JSDOM("");
-const $ = require("jquery")(window);
+const bodyParser = require("body-parser");
 const logger = require("./common/logger")
 const { Pool, ClientBase } = require('pg');
 const { Clubes, Membros, Partidas, ClubesPartidas, MembrosPartidas } = require('./app/models')
 const getColors = require('get-image-colors')
+var cron = require('node-cron');
+const cors = require("cors");
+var corsOptions = {
+  origin: "http://localhost:8080"
+};
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
-
-
-express()
-  .use(express.static(path.join(__dirname, 'public')))
-  .set('views', path.join(__dirname, 'views'))
-  .set('view engine', 'ejs')
-  .get('/cool', (req, res) => res.send(cool()))
-  .get('/', (req, res) => res.render('pages/index'))
-  .get('/proclubs', async (req, res) => {
-    //SALVAR DADOS DO CLUBE
-    updateClub(6703918);
-  })
-
-  .get('/members', async (req, res) => {
-    //SALVAR DADOS DOS JOGADORES
-    updateMembers();
-  })
-
-  .get('/matches', async (req, res) => {
-    //SALVAR DADOS DAS PARTIDAS
-    updateMatches();
-  })
-
-  .get('/season', async (req, res) => {
-    //SALVAR DADOS DAS PARTIDAS
-    updateSeason();
-  })
-
-  .get('/assets', async (req, res) => {
-    //SALVAR DADOS DE ASSETS
-    updateAssets();
-  })
-
-  .listen(PORT, () => console.log(`Listening on ${PORT}`))
+app = express()
+app.use(cors(corsOptions));
+app.use(express.static(path.join(__dirname, 'public')))
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'ejs')
+app.get('/', (req, res) => res.render('pages/index'))
+require("./app/routes/clubes")(app);
+require("./app/routes/clubesPartidas")(app);
+require("./app/routes/membros")(app);
+require("./app/routes/membrosPartidas")(app);
+require("./app/routes/partidas")(app);
+app.listen(PORT, () => console.log(`Listening on ${PORT}`))
 
 function updateClub(clubId) {
-  //ID DO CLUBE DO ROBSON
   //CONFIGURAÇÕES DA REQUISIÇÃO PARA A API DO PROCLUBS
   let config = {
     headers: {
@@ -102,7 +78,6 @@ function updateClub(clubId) {
 }
 
 function updateMembers(clubId) {
-  //let clubId = 6703918
   let config = {
     headers: {
       "Host": "proclubs.ea.com",
@@ -122,7 +97,10 @@ function updateMembers(clubId) {
   axios.get('https://proclubs.ea.com/api/fifa/members/stats?platform=ps4', config)
     .then(async response => {
       const membersData = response.data.members
+      //logger.info(response.data)
+      //logger.warn(membersData)
       membersData.forEach(md => {
+        md.clubid = clubId
         Membros.upsert(md)
       })
     })
@@ -163,7 +141,6 @@ function updateMatches() {
           saveMatch.timestamp = md.timestamp,
           saveMatch.homeClubId = Object.keys(md.clubs)[1],
           saveMatch.awayClubId = Object.keys(md.clubs)[0]
-        //console.log(md.clubs[saveMatch.homeClubId])
 
         Partidas.upsert({
           matchId: saveMatch.matchId,
@@ -361,3 +338,8 @@ function rgbToHex(r, g, b) {
 function updateSeason () {
   
 }
+
+cron.schedule('5 * * * *', () => {
+  logger.info("RUNNING CRON")
+  updateMatches();
+})

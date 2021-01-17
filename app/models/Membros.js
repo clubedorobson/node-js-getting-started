@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
         proOverall: DataTypes.STRING,
         manOfTheMatch: DataTypes.STRING,
         redCards: DataTypes.STRING,
+        clubid: DataTypes.INTEGER,
         favoritePosition: DataTypes.STRING,
     });
 

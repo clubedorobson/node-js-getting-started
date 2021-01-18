@@ -3,7 +3,7 @@
     <v-select 
       class="select" 
       ref="Temporada"  
-      v-model="model.opcoes"
+      v-model="seasons"
       :options="seasons"
       ></v-select>
     <b-table class="btable" striped hover :items="partidas" :fields="fields"></b-table>

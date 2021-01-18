@@ -1,31 +1,55 @@
 <template>
-  <div id="app">
-    <nav class="navbar navbar-expand navbar-dark">
-      <router-link to="/" class="navbar-brand">Clube do Robson</router-link>
-      <div class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <router-link to="/tutorials" class="nav-link">Tutorials</router-link>
-        </li>
-        <li class="nav-item">
-          <router-link to="/add" class="nav-link">Add</router-link>
-        </li>
-      </div>
-    </nav>
+  <v-app>
+    <v-app-bar
+      app
+      color="primary"
+      dark
+    >
+      <div class="d-flex align-center">
+        <v-img
+          alt="Vuetify Logo"
+          class="shrink mr-2"
+          contain
+          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
+          transition="scale-transition"
+          width="40"
+        />
 
-    <div class="container mt-3">
-      <router-view />
-    </div>
-  </div>
+        <v-img
+          alt="Vuetify Name"
+          class="shrink mt-1 hidden-sm-and-down"
+          contain
+          min-width="100"
+          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
+          width="100"
+        />
+      </div>
+
+      <v-spacer></v-spacer>
+
+      <v-btn
+        href="https://github.com/vuetifyjs/vuetify/releases/latest"
+        target="_blank"
+        text
+      >
+        <span class="mr-2">Latest Release</span>
+        <v-icon>mdi-open-in-new</v-icon>
+      </v-btn>
+    </v-app-bar>
+
+    <v-main>
+      <router-view/>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
+
 export default {
-  name: "app"
+  name: 'App',
+
+  data: () => ({
+    //
+  }),
 };
 </script>
-
-<style>
-  .navbar-dark{ background-color: rgb(222, 50, 228);}
-</style>
-
-

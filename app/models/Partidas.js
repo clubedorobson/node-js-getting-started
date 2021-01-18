@@ -23,6 +23,16 @@ module.exports = (sequelize, DataTypes) => {
         Partidas.hasMany(models.ClubesPartidas, {
             foreignKey: 'matchId'
         })
+
+        Partidas.belongsTo(models.Clubes, {
+          foreignKey: 'homeClub',
+          as: 'partidasHomeClub'
+        })
+
+        Partidas.belongsTo(models.Clubes, {
+          foreignKey: 'awayClub',
+          as: 'partidasAwayClub'
+        })
     }
   
     return Partidas;

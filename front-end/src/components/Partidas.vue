@@ -1,6 +1,12 @@
 <template>
   <div>
-    <b-table striped hover :items="items" :fields="fields"></b-table>
+    <v-select 
+      class="select" 
+      ref="Temporada"  
+      v-model="model.opcoes"
+      :options="seasons"
+      ></v-select>
+    <b-table class="btable" striped hover :items="partidas" :fields="fields"></b-table>
   </div>
 </template>
 
@@ -13,10 +19,44 @@ export default {
   name: "clube",
   data() {
     return {
-      fields: ["Casa", "" , "Fora", ""],
+      /*fields: ["first_name", "last_name", "age"],
       items: [
-        this.partidas
+        {
+          isActive: true,
+          age: 40,
+          first_name: "Dickerson",
+          last_name: "Macdonald",
+        },
+        { isActive: false, age: 21, first_name: "Larsen", last_name: "Shaw" },
+        { isActive: false, age: 89, first_name: "Geneva", last_name: "Wilson" },
+        { isActive: true, age: 38, first_name: "Jami", last_name: "Carney" },
+      ],*/
+
+      fields: [
+        {
+          key: "partidasHomeClub.name",
+          label: "Casa",
+          sortable: false,
+        },
+        {
+          key: "homeGoals",
+          label: "",
+          sortable: false,
+        },
+        {
+          key: "awayGoals",
+          label: "",
+          sortable: false,
+        },
+        {
+          key: "partidasAwayClub.name",
+          label: "Fora",
+          sortable: false,
+        },
       ],
+      model: {
+        opcoes : []
+      },
       currentPartida: null,
       message: "",
       seasons: [],
@@ -107,4 +147,9 @@ export default {
   max-width: 300px;
   margin: auto;
 }
+
+.btable {
+  text-align: center;
+}
+
 </style>

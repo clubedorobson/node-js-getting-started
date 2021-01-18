@@ -69,11 +69,15 @@ exports.getBySeason = async (req, res) => {
         where: {
             matchId: { [Op.in]: matchesToReturn }
         },
-        logging: console.log
+        include: [
+            {association: 'partidasHomeClub'},
+            {association: 'partidasAwayClub'}
+        ],
+        
     })
-    //logger.info(partidasSeason)
+    logger.info(partidasSeason)
     seasonMatches.partidasSeason = partidasSeason
-    logger.info(seasonMatches)
+    //logger.info(seasonMatches)
     res.send({seasonMatches, partidasSeason});
 }
 

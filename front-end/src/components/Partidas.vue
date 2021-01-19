@@ -1,12 +1,22 @@
 <template>
   <div>
     <v-select 
-      class="select" 
-      ref="Temporada"  
-      v-model="seasons"
-      :options="seasons"
+      class="select"
+      placeholder = "Escolha a temporada"
+      v-model= "selectedSeason" 
+      :items="opcoes"
+      item-text="label"
+      item-value="value"
+      v-on:input="getPartidas"
       ></v-select>
-    <b-table class="btable" striped hover :items="partidas" :fields="fields"></b-table>
+    <b-table class="btable" striped hover :items="partidas" :fields="fields">
+      <template #cell(partidasHomeClub.customcrestid)="data">
+        <b-img fluid height="80%" width="80%" v-bind:src="'https://fifa21.content.easports.com/fifa/fltOnlineAssets/05772199-716f-417d-9fe0-988fa9899c4d/2021/fifaweb/crests/256x256/l'+ data.value +'.png'" alt="..." /> 
+      </template>
+      <template #cell(partidasAwayClub.customcrestid)="data">
+        <b-img fluid height="80%" width="80%" v-bind:src="'https://fifa21.content.easports.com/fifa/fltOnlineAssets/05772199-716f-417d-9fe0-988fa9899c4d/2021/fifaweb/crests/256x256/l'+ data.value +'.png'" alt="..." /> 
+      </template>
+    </b-table>
   </div>
 </template>
 
@@ -19,6 +29,10 @@ export default {
   name: "clube",
   data() {
     return {
+      selectedSeason: {
+        label: 'Escolha a temporada',
+        value: null
+      },
       /*fields: ["first_name", "last_name", "age"],
       items: [
         {
@@ -33,6 +47,11 @@ export default {
       ],*/
 
       fields: [
+        {
+          key: "partidasHomeClub.customcrestid",
+          label: "",
+          sortable: false
+        },
         {
           key: "partidasHomeClub.name",
           label: "Casa",
@@ -53,9 +72,16 @@ export default {
           label: "Fora",
           sortable: false,
         },
+        {
+          key: "partidasAwayClub.customcrestid",
+          label: "",
+          sortable: false
+        },
       ],
+      opcoes : [],
       model: {
-        opcoes : []
+        opcoes : [],
+        selected: null
       },
       currentPartida: null,
       message: "",
@@ -65,10 +91,14 @@ export default {
     };
   },
   methods: {
-    getPartidas(seasonId, clubId) {
+    getPartidas(seasonId) {
+      let clubId = this.$route.params.clubId
+      console.log(clubId)
+      console.log(seasonId)
       clubesPartidasService
         .getBySeason(clubId, seasonId)
         .then((response) => {
+
           console.log(response.data.partidasSeason);
           this.partidas = response.data.partidasSeason;
         })
@@ -86,6 +116,14 @@ export default {
           }
         });
         this.seasons = [...new Set(this.seasons)];
+        this.seasons.forEach(season =>{
+          console.log(season)
+          this.opcoes.push({
+            label: 'Temporada ' + season,
+            value: season
+          })
+        })
+        console.log(this.opcoes)
       });
     },
 
@@ -137,12 +175,18 @@ export default {
     this.message = "";
     console.log(this.$route.params);
     this.getSeasons(this.$route.params.clubId);
-    this.getPartidas(33, this.$route.params.clubId);
+    //this.getPartidas(null, this.$route.params.clubId);
   },
 };
 </script>
 
 <style>
+
+td { 
+  vertical-align: middle !important;
+}
+
+
 .edit-form {
   max-width: 300px;
   margin: auto;
@@ -150,6 +194,8 @@ export default {
 
 .btable {
   text-align: center;
+  vertical-align: middle;
 }
+
 
 </style>

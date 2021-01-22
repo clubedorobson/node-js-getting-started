@@ -26,7 +26,7 @@ import clubesPartidasService from "../services/clubesPartidas";
 //import partidasService from "../services/partidasService"
 
 export default {
-  name: "clube",
+  name: "partidas",
   data() {
     return {
       selectedSeason: {

@@ -17,11 +17,13 @@ module.exports = (sequelize, DataTypes) => {
 
     Partidas.associate = (models) => {
         Partidas.hasMany(models.MembrosPartidas, {
-            foreignKey: 'matchId'
+            foreignKey: 'matchId',
+            as: 'partidasMembrosPartidas'
         })
 
         Partidas.hasMany(models.ClubesPartidas, {
-            foreignKey: 'matchId'
+            foreignKey: 'matchId',
+            as: 'partidasClubesPartidas'
         })
 
         Partidas.belongsTo(models.Clubes, {

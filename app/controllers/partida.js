@@ -1,5 +1,4 @@
 const { Sequelize } = require("sequelize");
-const logger = require("../../common/logger");
 const { Clubes, Membros, Partidas, ClubesPartidas, MembrosPartidas } = require('../models')
 const Op = Sequelize.Op;
 
@@ -14,31 +13,15 @@ exports.findAll = (req, res) => {
 };
 
 // Find a single Tutorial with an id
-exports.findOne = async (req, res) => {
-    const partidaId = req.params.partidaId;
-    logger.warn(req.params)
-
-    const partida = await Partidas.findAll({
-        where: {
-            matchId : partidaId
-        },
-        include : [
-            {association : 'partidasHomeClub'},
-            {association : 'partidasAwayClub'},
-            {association : 'partidasClubesPartidas'},
-            {association : 'partidasMembrosPartidas', include: [{association: 'membrosPartidasMembros'}]}
-        ],
-    })
-
-    logger.warn(partida)
-    res.send(partida)
-    /*Partidas.findByPk(id).then(result => {
+exports.findOne = (req, res) => {
+    const id = req.params.id;
+    Partidas.findByPk(id).then(result => {
         res.send(result);
     }).catch(err=> {
         res.status(500).send({
-            message: "Não foi possível encontrar o clube com id " + id 
+            message: "Não foi possível encontrar a partida com id " + id 
         });
-    })*/
+    })
 };
 
 

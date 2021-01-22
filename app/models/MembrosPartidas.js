@@ -20,13 +20,15 @@ module.exports = (sequelize, DataTypes) => {
       vproattr: DataTypes.STRING,
       name : DataTypes.INTEGER,
       matchId: DataTypes.INTEGER,
+      clubid: DataTypes.INTEGER,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE
     });
 
     MembrosPartidas.associate = (models) => {
         MembrosPartidas.belongsTo(models.Membros, {
-            foreignKey : 'name'
+            foreignKey : 'name',
+            as: 'membrosPartidasMembros'
         });
 
         MembrosPartidas.belongsTo(models.Partidas, {

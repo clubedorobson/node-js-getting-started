@@ -5,8 +5,8 @@ class clubesService {
         return http.get(`/partidas/${clubId}`);
     }
 
-    get(id, partidaId) {
-        return http.get(`/partidas/${partidaId}/${id}`);
+    getOne(partidaId) {
+        return http.get(`/partidas/${partidaId}/`);
     }
 
     getSeasons(clubId) {

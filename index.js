@@ -27,9 +27,10 @@ require("./app/routes/clubesPartidas")(app);
 require("./app/routes/membros")(app);
 require("./app/routes/membrosPartidas")(app);
 require("./app/routes/partidas")(app);
+require("./app/routes/robsoners")(app);
 app.listen(PORT, () => console.log(`Listening on ${PORT}`))
 
-function updateClub(clubId) {
+async function updateClub(clubId) {
   //CONFIGURAÇÕES DA REQUISIÇÃO PARA A API DO PROCLUBS
   let config = {
     headers: {
@@ -54,7 +55,7 @@ function updateClub(clubId) {
       let teamColors = await getTeamColors(clubData)
       logger.info("TTEEEAM", teamColors)
 
-      Clubes.upsert({
+      await Clubes.upsert({
         clubId: clubData.clubId,
         name: clubData.name,
         regionId: clubData.regionId,
@@ -69,7 +70,7 @@ function updateClub(clubId) {
         kitacolor1: clubData.customKit.kitAColor1,
         kitacolor2: clubData.customKit.kitAColor2,
         kitacolor3: clubData.customKit.kitAColor3,
-        logging: false
+        //logging: console.log
       })
     })
     .catch(error => {
@@ -77,7 +78,7 @@ function updateClub(clubId) {
     });
 }
 
-function updateMembers(clubId) {
+async function updateMembers(clubId) {
   let config = {
     headers: {
       "Host": "proclubs.ea.com",
@@ -99,9 +100,9 @@ function updateMembers(clubId) {
       const membersData = response.data.members
       //logger.info(response.data)
       //logger.warn(membersData)
-      membersData.forEach(md => {
-        md.clubid = clubId
-        Membros.upsert(md)
+      membersData.forEach(async md => {
+        md["clubid"] = clubId
+        await Membros.upsert(md)
       })
     })
     .catch(error => {
@@ -109,7 +110,7 @@ function updateMembers(clubId) {
     });
 }
 
-function updateMatches() {
+async function updateMatches() {
   let clubId = 6703918
   let config = {
     headers: {
@@ -137,48 +138,56 @@ function updateMatches() {
       let awayPlayers = []
       matchData.forEach(async md => {
         //INSERT MATCH DATA
-        saveMatch.matchId = md.matchId,
-          saveMatch.timestamp = md.timestamp,
-          saveMatch.homeClubId = Object.keys(md.clubs)[1],
-          saveMatch.awayClubId = Object.keys(md.clubs)[0]
+        //saveMatch = {}
+        //saveMatch.matchId = md.matchId
+        //logger.warn(saveMatch.matchId)
+        //saveMatch.timestamp = md.timestamp
+        //saveMatch.homeClubId = Object.keys(md.clubs)[1]
+        //saveMatch.awayClubId = Object.keys(md.clubs)[0]
+        //logger.warn(saveMatch)
 
-        Partidas.upsert({
-          matchId: saveMatch.matchId,
-          timestamp: saveMatch.timestamp,
-          homeClub: saveMatch.homeClubId,
-          awayClub: saveMatch.awayClubId,
-          homeGoals: md.clubs[saveMatch.homeClubId].goals,
-          awayGoals: md.clubs[saveMatch.awayClubId].goals,
-          logging: false
+        await updateClub(Object.keys(md.clubs)[0])
+        await updateClub(Object.keys(md.clubs)[1])
+
+        await Partidas.upsert({
+          matchId: md.matchId,
+          timestamp: md.timestamp,
+          homeClub: Object.keys(md.clubs)[1],
+          awayClub: Object.keys(md.clubs)[0],
+          homeGoals: md.clubs[Object.keys(md.clubs)[1]].goals,
+          awayGoals: md.clubs[Object.keys(md.clubs)[0]].goals,
+          //logging: console.log
         })
 
-        saveMatch.homeClub = md.clubs[saveMatch.homeClubId]
-        saveMatch.awayClub = md.clubs[saveMatch.awayClubId]
+        //saveMatch.homeClub = md.clubs[saveMatch.homeClubId]
+        //saveMatch.awayClub = md.clubs[saveMatch.awayClubId]
         //UPDATE CLUBS INFO
-        updateClub(saveMatch.homeClubId)
-        updateClub(saveMatch.awayClubId)
+
         //UPDATE CLUBS IN THAT MATCH INFO
         //UPDATE HOME CLUB
-        let aggregateAway = md.aggregate[saveMatch.awayClubId]
+        //let aggregateAway = md.aggregate[saveMatch.awayClubId]
         let aggregateHome = md.aggregate[saveMatch.homeClubId]
-        ClubesPartidas.upsert({
-          clubMatchId: md.matchId + saveMatch.awayClubId,
-          clubId: saveMatch.awayClubId,
+
+        await ClubesPartidas.upsert({
+          clubMatchId: md.matchId + Object.keys(md.clubs)[0],
+          clubId: Object.keys(md.clubs)[0],
           matchId: md.matchId,
-          seasonid: md.clubs[saveMatch.awayClubId].season_id,
-          passattempts: aggregateAway.passattempts,
-          passesmade: aggregateAway.passesmade,
-          rating: aggregateAway.rating,
-          shots: aggregateAway.shots,
-          goals: aggregateAway.goals,
-          goalsConceded: aggregateAway.goalsconceded,
-          assists: aggregateAway.assists,
-          tackleattempts: aggregateAway.tackleattempts,
-          tacklesmade: aggregateAway.tacklesmade,
-          logging:true
+          seasonid: md.clubs[Object.keys(md.clubs)[0]].season_id,
+          //seasonid: JSON.stringify(md),
+          passattempts: md.aggregate[Object.keys(md.clubs)[0]].passattempts,
+          passesmade: md.aggregate[Object.keys(md.clubs)[0]].passesmade,
+          rating: md.aggregate[Object.keys(md.clubs)[0]].rating,
+          //rating: JSON.stringify(md),
+          shots: md.aggregate[Object.keys(md.clubs)[0]].shots,
+          goals: md.aggregate[Object.keys(md.clubs)[0]].goals,
+          goalsConceded: md.aggregate[Object.keys(md.clubs)[0]].goalsconceded,
+          assists: md.aggregate[Object.keys(md.clubs)[0]].assists,
+          tackleattempts: md.aggregate[Object.keys(md.clubs)[0]].tackleattempts,
+          tacklesmade: md.aggregate[Object.keys(md.clubs)[0]].tacklesmade,
+          logging: console.log
         })
 
-        ClubesPartidas.upsert({
+        /*await ClubesPartidas.upsert({
           clubMatchId: md.matchId + saveMatch.homeClubId,
           clubId: saveMatch.homeClubId,
           matchId: md.matchId,
@@ -192,20 +201,36 @@ function updateMatches() {
           assists: aggregateHome.assists,
           tackleattempts: aggregateHome.tackleattempts,
           tacklesmade: aggregateHome.tacklesmade,
-          logging:true
+          logging: console.log
+        })*/
+        await ClubesPartidas.upsert({
+          clubMatchId: md.matchId + Object.keys(md.clubs)[1],
+          clubId: Object.keys(md.clubs)[1],
+          matchId: md.matchId,
+          seasonid: md.clubs[Object.keys(md.clubs)[1]].season_id,
+          passattempts: md.aggregate[Object.keys(md.clubs)[1]].passattempts,
+          passesmade: md.aggregate[Object.keys(md.clubs)[1]].passesmade,
+          rating: md.aggregate[Object.keys(md.clubs)[1]].rating,
+          shots: md.aggregate[Object.keys(md.clubs)[1]].shots,
+          goals: md.aggregate[Object.keys(md.clubs)[1]].goals,
+          goalsConceded: md.aggregate[Object.keys(md.clubs)[1]].goalsconceded,
+          assists: md.aggregate[Object.keys(md.clubs)[1]].assists,
+          tackleattempts: md.aggregate[Object.keys(md.clubs)[1]].tackleattempts,
+          tacklesmade: md.aggregate[Object.keys(md.clubs)[1]].tacklesmade,
+          logging: console.log
         })
 
         //INSERT PLAYERS IN THAT MATCH DATA
-        updateMembers(saveMatch.homeClubId)
-        updateMembers(saveMatch.awayClubId)
-        homePlayers = md.players[saveMatch.homeClubId]
-        Object.entries(homePlayers).forEach(async player => {
+        await updateMembers(Object.keys(md.clubs)[1])
+        await updateMembers(Object.keys(md.clubs)[0])
 
+        homePlayers = md.players[Object.keys(md.clubs)[1]]
+        Object.entries(homePlayers).forEach(async player => {
           let playerEntry = player[1]
-          MembrosPartidas.upsert({
-            memberMatchId: playerEntry.playername + saveMatch.matchId,
+          await MembrosPartidas.upsert({
+            memberMatchId: playerEntry.playername + md.matchId,
             name: playerEntry.playername,
-            matchId: saveMatch.matchId,
+            matchId: md.matchId,
             passattempts: playerEntry.passattempts,
             passesmade: playerEntry.passesmade,
             rating: playerEntry.rating,
@@ -217,19 +242,20 @@ function updateMatches() {
             tacklesmade: playerEntry.tacklesmade,
             pos: playerEntry.pos,
             vproattr: playerEntry.vproattr,
-            logging: false
+            clubid: Object.keys(md.clubs)[1]
+            //logging: console.log
           })
         })
 
         //INSERT PLAYERS IN THAT MATCH DATA
-        awayPlayers = md.players[saveMatch.awayClubId]
+        awayPlayers = md.players[Object.keys(md.clubs)[0]]
         //console.log(homePlayers)
         Object.entries(awayPlayers).forEach(async player => {
           let playerEntry = player[1]
-          MembrosPartidas.upsert({
-            memberMatchId: playerEntry.playername + saveMatch.matchId,
+          await MembrosPartidas.upsert({
+            memberMatchId: playerEntry.playername + md.matchId,
             name: playerEntry.playername,
-            matchId: saveMatch.matchId,
+            matchId: md.matchId,
             passattempts: playerEntry.passattempts,
             passesmade: playerEntry.passesmade,
             rating: playerEntry.rating,
@@ -241,7 +267,8 @@ function updateMatches() {
             tacklesmade: playerEntry.tacklesmade,
             pos: playerEntry.pos,
             vproattr: playerEntry.vproattr,
-            logging: false
+            clubid: Object.keys(md.clubs)[0]
+            //logging: console.log
           })
         })
         //console.log(homePlayers)
@@ -335,11 +362,11 @@ function rgbToHex(r, g, b) {
   return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
-function updateSeason () {
-  
+function updateSeason() {
+
 }
 
-cron.schedule('5 * * * *', () => {
+cron.schedule('*/1 * * * *', async () => {
   logger.info("RUNNING CRON")
-  updateMatches();
+  await updateMatches();
 })

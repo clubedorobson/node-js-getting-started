@@ -32,6 +32,10 @@ export default new Router({
       name: "partidas",
       component: () => import("./components/Partidas")
     },
-    
+    {
+      path: "/partida/:partidaId",
+      name: "partida",
+      component: () => import("./components/Partida")
+    }
   ]
 });

@@ -29,5 +29,16 @@ module.exports = (sequelize, DataTypes) => {
         favoritePosition: DataTypes.STRING,
     });
 
+    Membros.associate = (models) => {
+        Membros.belongsTo(models.Clubes, {
+            foreignKey : 'clubid',
+            as: 'membrosClubes'
+        });
+        Membros.hasMany(models.MembrosPartidas, {
+            foreignKey: "name",
+            as: 'membrosMembrosPartidas'
+        })
+    }
+
     return Membros;
 }

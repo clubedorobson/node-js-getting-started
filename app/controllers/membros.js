@@ -29,10 +29,19 @@ exports.findOne = (req, res) => {
     const clubId = req.params.clubId;
     console.log()
     Membros.findAll({
+        
         where: {
             name: id,
             clubid: clubId
-        }
+        }, 
+        include : [
+            {association: 'membrosClubes'},
+            {association: 'membrosMembrosPartidas', 
+                order: [
+                    ['updatedAt', 'DESC']
+                ], 
+            limit: 1}
+        ]
     }).then(result => {
         res.send(result);
     }).catch(err=> {

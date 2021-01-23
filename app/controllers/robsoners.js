@@ -20,7 +20,15 @@ exports.findOne = async (req, res) => {
     
     console.log(robsoner)
     res.send(robsoner)
+};
 
+exports.findAll = async (req, res) => {
+    const robsoners = await Robsoners.findAll({
+        logging: console.log
+    })
+    
+    console.log(robsoners)
+    res.send(robsoners)
 };
 
 // Update a Tutorial by the id in the request

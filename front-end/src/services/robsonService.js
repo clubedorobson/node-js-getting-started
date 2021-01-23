@@ -1,8 +1,8 @@
 import http from "../http-common";
 
 class robsonService {
-  getAll(clubId) {
-    return http.get(`/membros/${clubId}`);
+  getAll() {
+    return http.get(`/robsoners/`);
   }
 
   get(name) {

@@ -6,14 +6,17 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         primaryKey: true 
       },
-      fictionalName: DataTypes.STRING,
+      proName: DataTypes.STRING,
       number: DataTypes.INTEGER,
       birthdate: DataTypes.STRING,
       vproattr: DataTypes.STRING,
-      height: DataTypes.INTEGER,
+      proHeight: DataTypes.INTEGER,
       weight: DataTypes.INTEGER,
       face: DataTypes.STRING,
+      isfake: DataTypes.BOOLEAN,
       name: DataTypes.STRING,
+      proNationality: DataTypes.INTEGER,
+      proPos: DataTypes.INTEGER,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE
     });

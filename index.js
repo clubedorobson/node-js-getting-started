@@ -6,7 +6,7 @@ const axios = require('axios');
 const bodyParser = require("body-parser");
 const logger = require("./common/logger")
 const { Pool, ClientBase } = require('pg');
-const { Clubes, Membros, Partidas, ClubesPartidas, MembrosPartidas } = require('./app/models')
+const { Clubes, Membros, Partidas, ClubesPartidas, MembrosPartidas, Seasonals } = require('./app/models')
 const getColors = require('get-image-colors')
 var cron = require('node-cron');
 const cors = require("cors");
@@ -28,6 +28,7 @@ require("./app/routes/membros")(app);
 require("./app/routes/membrosPartidas")(app);
 require("./app/routes/partidas")(app);
 require("./app/routes/robsoners")(app);
+require("./app/routes/seasonals")(app);
 app.listen(PORT, () => console.log(`Listening on ${PORT}`))
 
 async function updateClub(clubId) {
@@ -279,6 +280,61 @@ async function updateMatches() {
     });
 }
 
+async function updateSeasonal() {
+  let clubId = 6703918
+  let config = {
+    headers: {
+      "Host": "proclubs.ea.com",
+      "Accept": "application/json",
+      "Accept-Language": "en-US,en;q=0.5",
+      "Accept-Encoding": "gzip, deflate, br",
+      "content-type": "application/json",
+      "Origin": "https://www.ea.com",
+      "Connection": "keep-alive",
+      "Referer": `https://www.ea.com/pt-br/games/fifa/fifa-21/pro-clubs/ps4-xb1-pc/overview?${clubId = 6703918}&platform=ps4`
+    },
+    params: {
+      clubIds: clubId
+    }
+  }
+  
+  axios.get('https://proclubs.ea.com/api/fifa/clubs/seasonalStats?platform=ps4', config)
+    .then(async response => {
+      const seasonalData = response.data[0]
+      logger.warn(seasonalData)
+      const div2 = seasonalData.titlesWon - seasonalData.leaguesWon - 2 - 3
+      await Seasonals.upsert({
+        seasons : seasonalData.seasons,
+        titleswon           : seasonalData.titlesWon,
+        leaguewins          : seasonalData.leaguesWon,
+        divswon1            : seasonalData.leaguesWon,
+        divswon2            : div2,
+        divswon3            : 3,
+        divswon4            : 2,
+        promotions          : seasonalData.promotions,
+        holds               : seasonalData.holds,
+        relegations         : seasonalData.relegations,
+        rankingpoints       : seasonalData.rankingPoints,
+        bestdivision        : seasonalData.bestDivision,
+        bestpoints          : seasonalData.bestPoints,
+        starlevel           : seasonalData.starLevel,
+        alltimegoals        : seasonalData.alltimeGoals,
+        alltimegoalsagainst : seasonalData.alltimeGoalsAgainst,
+        skill               : seasonalData.skill,
+        wins                : seasonalData.wins,
+        ties                : seasonalData.ties,
+        losses              : seasonalData.losses,
+        currentdivision     : seasonalData.currentDivision,
+        totalgames          : seasonalData.totalGames,
+        clubid              : clubId,
+        logging: console.log
+      }) 
+
+    })
+}
+
+updateSeasonal()
+
 function updateAssets() {
   let clubId = 6703918
   let config = {
@@ -362,9 +418,7 @@ function rgbToHex(r, g, b) {
   return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
-function updateSeason() {
 
-}
 
 cron.schedule('*/10 * * * *', async () => {
   logger.info("RUNNING CRON")

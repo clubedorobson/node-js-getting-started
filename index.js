@@ -366,7 +366,7 @@ function updateSeason() {
 
 }
 
-cron.schedule('*/1 * * * *', async () => {
+cron.schedule('*/10 * * * *', async () => {
   logger.info("RUNNING CRON")
   await updateMatches();
 })

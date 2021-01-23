@@ -1,9 +1,11 @@
 <template>
   <v-app>
+
     <v-app-bar
       app
       color="purple"
       dark
+      
     >
       <div class="d-flex align-center">
         <v-img
@@ -14,30 +16,30 @@
           transition="scale-transition"
           width="40"
         />
-
-        <h4 class="mr-2">Clube do Robson</h4>
-        <!--<v-img
+        
+        <v-img
           alt="Vuetify Name"
           class="shrink mt-1 hidden-sm-and-down"
           contain
           min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        /-->
+          src="./assets/CDR.png"
+          width="200"
+        />
 
 
+      
       </div>
-
+      
       <v-spacer></v-spacer>
 
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
+      
+      <v-btn text to="/clubes/6703918">Clube</v-btn>
+      <v-btn text to="/membros/6703918">Jogadores</v-btn>
+      <v-btn text to="/partidas/6703918">Partidas</v-btn>
+      
+
+
+
     </v-app-bar>
 
     <v-main>
@@ -47,12 +49,18 @@
 </template>
 
 <script>
-
+//v-if="$vuetify.breakpoint.xsOnly" para mobile
 export default {
   name: 'App',
 
   data: () => ({
-    //
+
   }),
 };
 </script>
+
+<style>
+.centerNav{
+  margin: 0 auto !important
+}
+</style>

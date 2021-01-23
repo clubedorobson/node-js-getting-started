@@ -9,6 +9,15 @@ import 'bootstrap'
 import 'bootstrap-vue'
 import vuetify from './plugins/vuetify';
 
+Vue.config.productionTip = false;
+
+
+new Vue({
+  router,
+  vuetify,
+  render: h => h(App)
+}).$mount('#app')
+
 // Make BootstrapVue available throughout your project
 Vue.use(BootstrapVue)
 // Optionally install the BootstrapVue icon components plugin
@@ -16,8 +25,4 @@ Vue.use(BootstrapVueIcons)
 
 Vue.config.productionTip = false
 
-new Vue({
-  router,
-  vuetify,
-  render: h => h(App)
-}).$mount('#app')
+Vue.use(vuetify)

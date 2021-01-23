@@ -1,5 +1,6 @@
 <template>
   <div>
+    <br>
     <v-select 
       class="select"
       placeholder = "Escolha a temporada"
@@ -9,14 +10,24 @@
       item-value="value"
       v-on:input="getPartidas"
       ></v-select>
-    <b-table class="btable" striped hover :items="partidas" :fields="fields">
-      <template #cell(partidasHomeClub.customcrestid)="data">
-        <b-img fluid height="80%" width="80%" v-bind:src="'https://fifa21.content.easports.com/fifa/fltOnlineAssets/05772199-716f-417d-9fe0-988fa9899c4d/2021/fifaweb/crests/256x256/l'+ data.value +'.png'" alt="..." /> 
+    <v-data-table :items="partidas" :headers="fields">
+      <template v-slot:item.homeCrest="{item}">
+        <v-img contain height=150% width=150% :src="'https://fifa21.content.easports.com/fifa/fltOnlineAssets/05772199-716f-417d-9fe0-988fa9899c4d/2021/fifaweb/crests/256x256/l'+ item.homeCrest +'.png'" alt="..." /> 
       </template>
-      <template #cell(partidasAwayClub.customcrestid)="data">
-        <b-img fluid height="80%" width="80%" v-bind:src="'https://fifa21.content.easports.com/fifa/fltOnlineAssets/05772199-716f-417d-9fe0-988fa9899c4d/2021/fifaweb/crests/256x256/l'+ data.value +'.png'" alt="..." /> 
+      <template v-slot:item.awayCrest="{item}">
+        <v-img contain height=150% width=150% :src="'https://fifa21.content.easports.com/fifa/fltOnlineAssets/05772199-716f-417d-9fe0-988fa9899c4d/2021/fifaweb/crests/256x256/l'+ item.awayCrest +'.png'" alt="..." /> 
       </template>
-    </b-table>
+      <template v-slot:item.matchId="{item}">
+        <b-btn 
+        :title="Detalhes"
+        variant="purple"
+        :to="{
+          name:'partida',
+          params: {partidaId: item.matchId}
+        }"
+        >Detalhes</b-btn> 
+      </template>
+    </v-data-table>
   </div>
 </template>
 
@@ -33,50 +44,42 @@ export default {
         label: 'Escolha a temporada',
         value: null
       },
-      /*fields: ["first_name", "last_name", "age"],
-      items: [
-        {
-          isActive: true,
-          age: 40,
-          first_name: "Dickerson",
-          last_name: "Macdonald",
-        },
-        { isActive: false, age: 21, first_name: "Larsen", last_name: "Shaw" },
-        { isActive: false, age: 89, first_name: "Geneva", last_name: "Wilson" },
-        { isActive: true, age: 38, first_name: "Jami", last_name: "Carney" },
-      ],*/
-
       fields: [
         {
-          key: "partidasHomeClub.customcrestid",
-          label: "",
+          value: "homeCrest",
+          text: "",
           sortable: false
         },
         {
-          key: "partidasHomeClub.name",
-          label: "Casa",
+          value: "partidasHomeClub.name",
+          text: "Casa",
           sortable: false,
         },
         {
-          key: "homeGoals",
-          label: "",
+          value: "homeGoals",
+          text: "",
           sortable: false,
         },
         {
-          key: "awayGoals",
-          label: "",
+          value: "awayGoals",
+          text: "",
           sortable: false,
         },
         {
-          key: "partidasAwayClub.name",
-          label: "Fora",
+          value: "partidasAwayClub.name",
+          text: "Fora",
           sortable: false,
         },
         {
-          key: "partidasAwayClub.customcrestid",
-          label: "",
+          value: "awayCrest",
+          text: "",
           sortable: false
         },
+        {
+          value: "matchId",
+          text: "",
+          sortable: false
+        }
       ],
       opcoes : [],
       model: {
@@ -101,6 +104,27 @@ export default {
 
           console.log(response.data.partidasSeason);
           this.partidas = response.data.partidasSeason;
+
+          console.log(this.partidas)
+          
+          this.partidas.forEach((partida,i) => {
+            if(partida.partidasAwayClub.iscustomteam == 1) {
+              this.partidas[i]["awayCrest"] = this.partidas[i].partidasAwayClub.customcrestid
+            }
+            else if (partida.partidasAwayClub.iscustomteam == 0) {
+              this.partidas[i]["awayCrest"] = this.partidas[i].partidasAwayClub.teamId
+            }
+            if(partida.partidasHomeClub.iscustomteam == 1) {
+              this.partidas[i]["homeCrest"] = this.partidas[i].partidasHomeClub.customcrestid
+            }
+            else if (partida.partidasHomeClub.iscustomteam == 0) {
+              this.partidas[i]["homeCrest"] = this.partidas[i].partidasHomeClub.teamId
+            }
+          })
+
+          console.log(this.partidas)
+
+          
         })
         .catch((e) => {
           console.log(e);
@@ -116,6 +140,7 @@ export default {
           }
         });
         this.seasons = [...new Set(this.seasons)];
+        this.seasons = this.seasons.sort()
         this.seasons.forEach(season =>{
           console.log(season)
           this.opcoes.push({
@@ -131,45 +156,7 @@ export default {
       this.currentPartida = partida;
       this.currentIndex = index;
     },
-    /*updatePublished(status) {
-      var data = {
-        id: this.currentTutorial.id,
-        title: this.currentTutorial.title,
-        description: this.currentTutorial.description,
-        published: status
-      };
 
-      TutorialDataService.update(this.currentTutorial.id, data)
-        .then(response => {
-          this.currentTutorial.published = status;
-          console.log(response.data);
-        })
-        .catch(e => {
-          console.log(e);
-        });
-    },*/
-
-    /*updateTutorial() {
-      TutorialDataService.update(this.currentTutorial.id, this.currentTutorial)
-        .then(response => {
-          console.log(response.data);
-          this.message = 'The tutorial was updated successfully!';
-        })
-        .catch(e => {
-          console.log(e);
-        });
-    },*/
-
-    /*deleteTutorial() {
-      TutorialDataService.delete(this.currentTutorial.id)
-        .then(response => {
-          console.log(response.data);
-          this.$router.push({ name: "tutorials" });
-        })
-        .catch(e => {
-          console.log(e);
-        });
-    }*/
   },
   mounted() {
     this.message = "";

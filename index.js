@@ -10,7 +10,7 @@ const getColors = require('get-image-colors')
 var cron = require('node-cron');
 const cors = require("cors");
 var corsOptions = {
-  origin: "http://clube-do-robson.herokuapp.com"
+  origin: "localhost"
 };
 const path = __dirname + '/app/views/';
 
@@ -29,8 +29,8 @@ var allowCrossDomain = function(req, res, next) {
 };
 
 app = express()
-//app.use(allowCrossDomain)
-//app.use(cors());
+app.use(allowCrossDomain)
+app.use(cors());
 app.use(express.static(path));
 app.get('/', function (req,res) {
   res.sendFile(path + "index.html");

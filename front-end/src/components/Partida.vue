@@ -1,11 +1,10 @@
 <template>
   <div>
-
-    <b-table  v-if="tabelaPartida.length > 0" :items="tabelaPartida" :fields="fieldsTimes">
+    <b-table  fixed v-if="tabelaPartida.length > 0" :items="tabelaPartida" :fields="fieldsTimes">
       <template #cell(homeCrest)="data">
         <b-img
           fluid
-          left
+          center
           height="100%"
           width="100%"
           v-bind:src="
@@ -16,9 +15,13 @@
           alt="..."
         />
       </template>
+      <template #cell(partidasHomeClub.name) = "data">
+        <span class="homeName">{{data.item.partidasHomeClub.name}}</span> <span class="matchResult">{{data.item.homeGoals}} x {{data.item.awayGoals}}</span> <span class="awayName">{{data.item.partidasAwayClub.name}}</span>
+      </template>
       <template #cell(awayCrest)="data">
         <b-img
           fluid
+          center
           height="100%"
           width="100%"
           v-bind:src="
@@ -92,7 +95,7 @@ export default {
           key: "casa",
           label: "",
           sortable: false,
-          align: "center"
+          
         },
         {
           key: "label",
@@ -111,37 +114,37 @@ export default {
       fieldsTimes: [
         {
           key: "homeCrest",
-          label: "",
-          sortable: false,
-          align: "center"
-        },
-        {
-          key: "partidasHomeClub.name",
           label: "Casa",
           sortable: false,
           align: "center"
         },
         {
-          key: "homeGoals",
+          key: "partidasHomeClub.name",
           label: "",
           sortable: false,
           align: "center"
         },
+        /*{
+          key: "homeGoals",
+          label: "",
+          sortable: false,
+          align: "center"
+        },*/
         /*{
           value: "awayGoals",
           text: "",
           sortable: false,
           align: "center"
         },*/
-        {
+        /*{
           key: "partidasAwayClub.name",
           label: "Fora",
           sortable: false,
           align: "center"
-        },
+        },*/
         {
           key: "awayCrest",
-          label: "",
+          label: "Fora ",
           sortable: false,
           align: "center"
         },
@@ -440,23 +443,29 @@ td {
   
 }
 
-.v-data-table {
-  table-layout: fixed !important;
-  
+td {
+  text-align: center;
 }
 
-tr.v-data-table__mobile-row {
-  width: 100vw !important;
+th {
+  text-align: center;
 }
-
-td.v-data-table__mobile-row {
-  width: 20% !important;
-}
-
-
 
 div.card-body {
   text-align: center;
+}
+
+.homeName {
+  float:left
+}
+
+.awayName {
+  float: right
+}
+
+.matchResult {
+  position: absolute;
+  left: 50%
 }
 
 .modal-body {

@@ -1,6 +1,8 @@
 <template>
   <div v-if="currentMembro">
     <b-card fluid>
+    
+    <b-card-group deck>
       <b-card fluid>
         <b-img
           fluid
@@ -14,8 +16,7 @@
       </b-card>
 
       <b-card fluid>
-        <b-row>
-          <b-col>
+
             <b-img
               v-bind:src="
                 'https://www.ea.com/fifa/ultimate-team/web-app/content/21D4F1AC-91A3-458D-A64E-895AA6D871D1/2021/fut/items/images/mobile/flags/card/' +
@@ -24,38 +25,31 @@
               "
             />
             <p>Nacionalidade</p>
-          </b-col>
-          <b-col class="centerVertical">
+
             {{ currentMembro.proHeight }} cm
             <p>Altura</p>
-          </b-col>
-          <b-col class="centerVertical">
+
             {{ robsoner.weight }} kg
             <p>Peso</p>
-          </b-col>
-        </b-row>
+
       </b-card>
 
       <b-card>
-        <b-row>
-          <b-col>
+
             {{ robsoner.birthdate }}
             <p>Nascimento</p>
-          </b-col>
-          <b-col>
+
             {{ robsoner.position }}
             <p>Posição</p>
-          </b-col>
-          <b-col>
+
             {{ robsoner.number }}
             <p>Número</p>
-          </b-col>
-        </b-row>
+
       </b-card>
+    </b-card-group>
 
       <div responsive>
-        <b-row>
-          <b-col>
+        <b-card-group deck>
             <b-card fluid>
               <line-chart
                 class="hexagon" 
@@ -66,10 +60,7 @@
               <b-btn  variant="purple" class="button-right" id="show-btn" @click="showModal">Detalhes</b-btn>
             </b-card>
             
-          </b-col>
-          <b-col>
             <b-card title="Estatísticas" >
-              
                 <b-row>
                   <b-col> Jogos </b-col>
                   <b-col>
@@ -79,6 +70,7 @@
                     {{ currentMembro.gamesPlayed }}
                   </b-col>
                 </b-row>
+
                 <b-row>
                   <b-col> Gols </b-col>
                   <b-col>
@@ -88,6 +80,7 @@
                     {{ currentMembro.goals }}
                   </b-col>
                 </b-row>
+
                 <b-row>
                   <b-col> Assistências </b-col>
                   <b-col>
@@ -107,6 +100,7 @@
                     {{ currentMembro.manOfTheMatch }}
                   </b-col>
                 </b-row>
+
                 <b-row>
                   <b-col> Precisão dos Passes </b-col>
                                     <b-col>
@@ -114,6 +108,7 @@
                   </b-col>
                   <b-col> {{ currentMembro.passSuccessRate }} % </b-col>
                 </b-row>
+
                 <b-row>
                   <b-col> Passes </b-col>
                                     <b-col>
@@ -123,6 +118,7 @@
                     {{ currentMembro.passesMade }}
                   </b-col>
                 </b-row>
+
                 <b-row>
                   <b-col> Cartões Vermelhos </b-col>
                                     <b-col>
@@ -132,6 +128,7 @@
                     {{ currentMembro.redCards }}
                   </b-col>
                 </b-row>
+
                 <b-row>
                   <b-col> Precisão dos Chutes </b-col>
                                     <b-col>
@@ -139,6 +136,7 @@
                   </b-col>
                   <b-col> {{ currentMembro.shotSuccessRate }} % </b-col>
                 </b-row>
+
                 <b-row>
                   <b-col> Porcentagem de vitória </b-col>
                                     <b-col>
@@ -148,8 +146,7 @@
                 </b-row>
               
             </b-card>
-          </b-col>
-        </b-row>
+        </b-card-group>
       </div>
     </b-card>
 
@@ -548,4 +545,13 @@ div.col{
     background-color: #ff2519;
 }
 
+.card-body {
+  vertical-align: center;
+}
+
+.row {
+     display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
 </style>

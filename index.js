@@ -1,5 +1,4 @@
 const express = require('express')
-const path = require('path')
 const PORT = process.env.PORT || 5000
 const cool = require('cool-ascii-faces');
 const axios = require('axios');
@@ -13,15 +12,20 @@ const cors = require("cors");
 var corsOptions = {
   origin: "http://localhost:8080"
 };
+const path = __dirname + '/app/views/';
 
 app = express()
 app.use(cors(corsOptions));
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path));
+app.get('/', function (req,res) {
+  res.sendFile(path + "index.html");
+});
+//app.use(express.static(path.join(__dirname, 'public')))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'ejs')
-app.get('/', (req, res) => res.render('pages/index'))
+//app.set('views', path.join(__dirname, 'views'))
+//app.set('view engine', 'ejs')
+//app.get('/', (req, res) => res.render('pages/index'))
 require("./app/routes/clubes")(app);
 require("./app/routes/clubesPartidas")(app);
 require("./app/routes/membros")(app);

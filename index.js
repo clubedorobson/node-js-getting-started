@@ -10,7 +10,7 @@ const getColors = require('get-image-colors')
 var cron = require('node-cron');
 const cors = require("cors");
 var corsOptions = {
-  origin: "http://clube-do-robson.herokuapp.com:8080"
+  origin: "http://clube-do-robson.herokuapp.com"
 };
 const path = __dirname + '/app/views/';
 

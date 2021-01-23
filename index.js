@@ -29,8 +29,8 @@ var allowCrossDomain = function(req, res, next) {
 };
 
 app = express()
-app.use(allowCrossDomain)
-app.use(cors(corsOptions));
+//app.use(allowCrossDomain)
+app.use(cors());
 app.use(express.static(path));
 app.get('/', function (req,res) {
   res.sendFile(path + "index.html");

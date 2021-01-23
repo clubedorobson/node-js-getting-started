@@ -30,7 +30,7 @@ var allowCrossDomain = function(req, res, next) {
 
 app = express()
 //app.use(allowCrossDomain)
-app.use(cors());
+//app.use(cors());
 app.use(express.static(path));
 app.get('/', function (req,res) {
   res.sendFile(path + "index.html");
@@ -48,6 +48,7 @@ require("./app/routes/membrosPartidas")(app);
 require("./app/routes/partidas")(app);
 require("./app/routes/robsoners")(app);
 require("./app/routes/seasonals")(app);
+
 app.listen(PORT, () => console.log(`Listening on ${PORT}`))
 
 async function updateClub(clubId) {

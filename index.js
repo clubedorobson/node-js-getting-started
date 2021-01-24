@@ -440,7 +440,7 @@ function rgbToHex(r, g, b) {
 
 
 
-cron.schedule('*/10 * * * *', async () => {
+cron.schedule('*/30 * * * *', async () => {
   logger.info("RUNNING CRON")
   await updateMatches();
 })

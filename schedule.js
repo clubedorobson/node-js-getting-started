@@ -30,7 +30,7 @@ async function updateClub(clubId) {
         const clubData = response.data[clubId]
   
         let teamColors = await getTeamColors(clubData)
-        logger.info("TTEEEAM", teamColors)
+        //logger.info("TTEEEAM", teamColors)
   
         await Clubes.upsert({
           clubId: clubData.clubId,
@@ -277,7 +277,7 @@ async function updateClub(clubId) {
     axios.get('https://proclubs.ea.com/api/fifa/clubs/seasonalStats?platform=ps4', config)
       .then(async response => {
         const seasonalData = response.data[0]
-        logger.warn(seasonalData)
+        //logger.warn(seasonalData)
         const div2 = seasonalData.titlesWon - seasonalData.leaguesWon - 2 - 3
         await Seasonals.upsert({
           seasons : seasonalData.seasons,
@@ -346,7 +346,7 @@ async function updateClub(clubId) {
     let kitColors = {}
     //console.log(clubData.customKit.isCustomTeam)
     if (clubData.customKit.isCustomTeam == "0") {
-      logger.info("NOOOOO CUSTOOOOOOMMMMM")
+      //logger.info("NOOOOO CUSTOOOOOOMMMMM")
       let teamColors = []
       let teamColorHex = []
       teamColors = await getColors(`https://www.ea.com/fifa/ultimate-team/web-app/content/21D4F1AC-91A3-458D-A64E-895AA6D871D1/2021/fut/items/images/mobile/kits/home/j0_${teamId}_0.png`, colorOptions)

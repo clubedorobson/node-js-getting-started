@@ -1,3 +1,10 @@
+const cool = require('cool-ascii-faces');
+const axios = require('axios');
+const bodyParser = require("body-parser");
+const logger = require("./common/logger")
+const { Pool, ClientBase } = require('pg');
+const { Clubes, Membros, Partidas, ClubesPartidas, MembrosPartidas, Seasonals } = require('./app/models')
+const getColors = require('get-image-colors')
 var cron = require('node-cron');
 
 async function updateClub(clubId) {

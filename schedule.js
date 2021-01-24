@@ -405,5 +405,5 @@ async function updateClub(clubId) {
     axios.get("https://clubedorobson.herokuapp.com/", function() {
        console.log("WAKE UP DYNO");
     });
-    return reqTimer = setTimeout(wakeUp, 6000);
- }, 6000);
+    return reqTimer = setTimeout(wakeUp, 1200000);
+ }, 1200000);

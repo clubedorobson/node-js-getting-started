@@ -400,3 +400,10 @@ async function updateClub(clubId) {
     logger.info("RUNNING CRON")
     await updateMatches();
   })
+
+  var reqTimer = setTimeout(function wakeUp() {
+    request("https://clubedorobson.herokuapp.com/", function() {
+       console.log("WAKE UP DYNO");
+    });
+    return reqTimer = setTimeout(wakeUp, 6000);
+ }, 6000);

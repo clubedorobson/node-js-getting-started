@@ -396,7 +396,7 @@ async function updateClub(clubId) {
   
   
   
-  cron.schedule('*/5 * * * *', async () => {
+  cron.schedule('*/30 * * * *', async () => {
     logger.info("RUNNING CRON")
     await updateMatches();
   })

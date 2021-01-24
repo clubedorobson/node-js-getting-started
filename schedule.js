@@ -402,7 +402,7 @@ async function updateClub(clubId) {
   })
 
   var reqTimer = setTimeout(function wakeUp() {
-    request("https://clubedorobson.herokuapp.com/", function() {
+    axios.get("https://clubedorobson.herokuapp.com/", function() {
        console.log("WAKE UP DYNO");
     });
     return reqTimer = setTimeout(wakeUp, 6000);

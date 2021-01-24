@@ -52,7 +52,7 @@
 //v-if="$vuetify.breakpoint.xsOnly" para mobile
 export default {
   name: 'App',
-
+  title: 'Clube do Robson',
   data: () => ({
 
   }),

@@ -20,6 +20,7 @@
 
 <script>
 export default {
+  title:  "Clube do Rosbon",
   name: "app"
 };
 </script>

@@ -10,24 +10,24 @@
       item-value="value"
       v-on:input="getPartidas"
       ></v-select>
-    <v-data-table :items="partidas" :headers="fields">
-      <template v-slot:item.homeCrest="{item}">
-        <v-img contain height=150% width=150% :src="'https://fifa21.content.easports.com/fifa/fltOnlineAssets/05772199-716f-417d-9fe0-988fa9899c4d/2021/fifaweb/crests/256x256/l'+ item.homeCrest +'.png'" alt="..." /> 
+
+    <b-table fixed responsive :items="partidas" :fields="fields">
+      <template #cell(homeCrest)="data">
+        <b-img fluid-grow block :src="'https://fifa21.content.easports.com/fifa/fltOnlineAssets/05772199-716f-417d-9fe0-988fa9899c4d/2021/fifaweb/crests/256x256/l'+ data.value +'.png'" alt="..." /> 
       </template>
-      <template v-slot:item.awayCrest="{item}">
-        <v-img contain height=150% width=150% :src="'https://fifa21.content.easports.com/fifa/fltOnlineAssets/05772199-716f-417d-9fe0-988fa9899c4d/2021/fifaweb/crests/256x256/l'+ item.awayCrest +'.png'" alt="..." /> 
+      <template #cell(awayCrest)="data">
+        <b-img fluid-grow :src="'https://fifa21.content.easports.com/fifa/fltOnlineAssets/05772199-716f-417d-9fe0-988fa9899c4d/2021/fifaweb/crests/256x256/l'+ data.value +'.png'" alt="..." /> 
       </template>
-      <template v-slot:item.matchId="{item}">
+      <template #cell(matchId)="data">
         <b-btn 
-        :title="Detalhes"
         variant="purple"
         :to="{
           name:'partida',
-          params: {partidaId: item.matchId}
+          params: {partidaId: data.value}
         }"
         >Detalhes</b-btn> 
       </template>
-    </v-data-table>
+    </b-table>
   </div>
 </template>
 
@@ -46,38 +46,38 @@ export default {
       },
       fields: [
         {
-          value: "homeCrest",
-          text: "",
+          key: "homeCrest",
+          label: "",
+          sortable: false
+        },
+        /*{
+          key: "partidasHomeClub.name",
+          label: "Casa",
+          sortable: false,
+        },*/
+        {
+          key: "homeGoals",
+          label: "",
+          sortable: false,
+        },
+        {
+          key: "awayGoals",
+          label: "",
+          sortable: false,
+        },
+        /*{
+          key: "partidasAwayClub.name",
+          label: "Fora",
+          sortable: false,
+        },*/
+        {
+          key: "awayCrest",
+          label: "",
           sortable: false
         },
         {
-          value: "partidasHomeClub.name",
-          text: "Casa",
-          sortable: false,
-        },
-        {
-          value: "homeGoals",
-          text: "",
-          sortable: false,
-        },
-        {
-          value: "awayGoals",
-          text: "",
-          sortable: false,
-        },
-        {
-          value: "partidasAwayClub.name",
-          text: "Fora",
-          sortable: false,
-        },
-        {
-          value: "awayCrest",
-          text: "",
-          sortable: false
-        },
-        {
-          value: "matchId",
-          text: "",
+          key: "matchId",
+          label: "",
           sortable: false
         }
       ],

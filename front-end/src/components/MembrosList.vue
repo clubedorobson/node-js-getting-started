@@ -1,22 +1,39 @@
 <template>
   <div>
-    <v-data-table v-if="listMembros" :items="listMembros" :headers="headers">
-      <template v-slot:item.face="{ item }">
-        <b-img center rounded="circle" height="100%" width="100%" :src="item.face" alt="..." />
+
+    <b-table 
+      fixed 
+      v-if="listMembros" 
+      :items="listMembros" 
+      :fields="headers" 
+      id="my-table"
+      :per-page="perPage"
+      :current-page="currentPage">
+      <template #cell(face)="data">
+        <b-img center rounded="circle" height="100%" width="100%" :src="data.value" alt="..." />
       </template>
 
-      <template v-slot:item.name="{ item }">
+      <template #cell(name)="data">
         <b-btn
-          :title="Detalhes"
           variant="purple"
           :to="{
             name: 'membro',
-            params: { id: item.name },
+            params: { id: data.value },
           }"
           >Detalhes</b-btn
         >
       </template>
-    </v-data-table>
+    </b-table>
+
+    <b-pagination
+      class="paginationPurple"
+      align="center"
+      v-model="currentPage"
+      :total-rows="rows"
+      :per-page="perPage"
+      aria-controls="my-table"
+    ></b-pagination>
+
   </div>
 </template>
 
@@ -34,31 +51,40 @@ export default {
       fakeRobsoners: [],
       currentMembro: null,
       currentIndex: -1,
+      perPage: 10,
+      currentPage: 1,
       title: "",
       headers: [
         {
-          value: "face",
-          text: "",
+          key: "face",
+          label: "",
           sortable: false,
         },
         {
-          value: "number",
-          text: "",
+          key: "number",
+          label: "",
           sortable: false,
         },
         {
-          value: "proName",
-          text: "",
+          key: "proName",
+          label: "",
           sortable: false,
         },
         {
-          value: "name",
-          text: "",
+          key: "name",
+          label: "",
           sortable: false,
         },
       ],
     };
   },
+
+  computed: {
+    rows() {
+        return this.listMembros.length
+    }
+  },
+
   methods: {
     async getMembros(clubId) {
       membrosService
@@ -118,11 +144,6 @@ export default {
         console.log(this.membros);
       });
     },
-    /*refreshList() {
-      this.retrieveTutorials();
-      this.currentTutorial = null;
-      this.currentIndex = -1;
-    },*/
 
     setActiveMembro(membro, index) {
       this.currentMembro = membro;
@@ -143,6 +164,9 @@ export default {
 }
 
 td {
-  text-align: center !important
+  text-align: center !important;
+  vertical-align: middle !important
 }
+
+
 </style>

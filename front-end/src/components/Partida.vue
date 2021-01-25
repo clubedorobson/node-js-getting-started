@@ -1,6 +1,7 @@
 <template>
   <div>
-    <b-table  fixed v-if="tabelaPartida.length > 0" :items="tabelaPartida" :fields="fieldsTimes">
+    <header-partida v-if="tabelaPartida.length > 0" v-bind:items="tabelaPartida"></header-partida>
+    <!--<b-table  v-if="tabelaPartida.length > 0" :items="tabelaPartida" :fields="fieldsTimes">
       <template #cell(homeCrest)="data">
         <b-img
           fluid
@@ -16,7 +17,7 @@
         />
       </template>
       <template #cell(partidasHomeClub.name) = "data">
-        <span class="homeName">{{data.item.partidasHomeClub.name}}</span> <span class="matchResult">{{data.item.homeGoals}} x {{data.item.awayGoals}}</span> <span class="awayName">{{data.item.partidasAwayClub.name}}</span>
+        <span class="spanCenter">{{data.item.partidasHomeClub.name}}</span> <br> <span class="spanCenter">{{data.item.homeGoals}} x {{data.item.awayGoals}}</span> <br> <span class="spanCenter">{{data.item.partidasAwayClub.name}}</span>
       </template>
       <template #cell(awayCrest)="data">
         <b-img
@@ -35,40 +36,43 @@
       <template #cell(homeGoals)="data">
         {{data.value}} <span>x</span> {{data.item.awayGoals}}
       </template>
-    </b-table>
+    </b-table>-->
 
 
     <b-card>
-    <b-table
+    <!--<b-table
       align="center"
       :items="arrayPartida"
       :fields="fields"
-    ></b-table>
+    ></b-table>-->
+    <stats-partida :items="arrayPartida"></stats-partida>
     </b-card>
+    
     <b-card>
       <div>
-        <b-tabs fill>
+        <!--<b-tabs fill>
           <b-tab v-if="tabelaPartida.length > 0" v-bind:title="tabelaPartida[0].partidasHomeClub.name" active>
-            <v-data-table elevation-1 align="center" class="btable" bordered outlined small text-center striped hover :items="membrosHome" :headers="fieldsMembros">
-            </v-data-table>
+            <b-table elevation-1 align="center" class="btable" bordered outlined small text-center striped hover :items="membrosHome" :fields="fieldsMembros">
+            </b-table>
             <b-btn v-if="clubeDoRobson == 'HOME'" variant="purple" class="button-right" id="show-btn" @click="showModal">Escalação</b-btn>
           </b-tab>
           <b-tab v-if="tabelaPartida.length > 0" v-bind:title="tabelaPartida[0].partidasAwayClub.name">
-            <v-data-table align="center" class="btable" bordered outlined small text-center striped hover :items="membrosAway" :headers="fieldsMembros">
-            </v-data-table>
+            <b-table align="center" class="btable" bordered outlined small text-center striped hover :items="membrosAway" :fields="fieldsMembros">
+            </b-table>
             <b-btn v-if="clubeDoRobson == 'AWAY'" variant="purple" class="button-right" id="show-btn" @click="showModal">Escalação</b-btn>
           </b-tab>
-        </b-tabs>
+        </b-tabs>-->
+        <tabs-times-partida :membrosAway="membrosAway" :membrosHome="membrosHome" :clubeDoRobson="clubeDoRobson" :tabelaPartida="tabelaPartida" :squadImage="squadImage"></tabs-times-partida>
       </div>
     </b-card>
 
-    <b-modal centered id="modal-tall" size="xl" ref="my-modal" ok-only>
+    <!--<b-modal centered id="modal-tall" size="xl" ref="my-modal" ok-only>
         <b-img
           v-if="squadImage"
           fluid
           center
           :src="require(`@/assets/squads/${squadImage}`)"/>
-    </b-modal>
+    </b-modal>-->
 
   </div>
 </template>
@@ -77,12 +81,20 @@
 
 import partidasService from "../services/partidasService";
 import robsonService from "../services/robsonService"
+import HeaderPartida from './Partida/HeaderPartida.vue';
+import StatsPartida from "./Partida/StatsPartida"
+import TabsTimesPartida from './Partida/TabsTimesPartida.vue';
 
 export default {
   name: "partida",
+  components: {
+    HeaderPartida,
+    StatsPartida,
+    TabsTimesPartida
+  },
   data() {
     return {
-      modalShow: null,
+      //modalShow: null,
       fixed: true,
       membrosHome: [],
       membrosAway: [],
@@ -90,156 +102,7 @@ export default {
       membrosRobsonCompleto: [],
       clubeDoRobson: null,
       tabelaPartida: [],
-      fields: [
-        {
-          key: "casa",
-          label: "",
-          sortable: false,
-          
-        },
-        {
-          key: "label",
-          label: "",
-          text: "",
-          sortable: false,
-          align: "center"
-        },
-        {
-          key: "fora",
-          label: "",
-          sortable: false,
-          align: "center"
-        },
-      ],
-      fieldsTimes: [
-        {
-          key: "homeCrest",
-          label: "Casa",
-          sortable: false,
-          align: "center"
-        },
-        {
-          key: "partidasHomeClub.name",
-          label: "",
-          sortable: false,
-          align: "center"
-        },
-        /*{
-          key: "homeGoals",
-          label: "",
-          sortable: false,
-          align: "center"
-        },*/
-        /*{
-          value: "awayGoals",
-          text: "",
-          sortable: false,
-          align: "center"
-        },*/
-        /*{
-          key: "partidasAwayClub.name",
-          label: "Fora",
-          sortable: false,
-          align: "center"
-        },*/
-        {
-          key: "awayCrest",
-          label: "Fora ",
-          sortable: false,
-          align: "center"
-        },
-      ],
-      fieldsPartida: [
-        {
-          value: "partidasClubesPartidas[1].passattempts",
-          text: "",
-          sortable: false,
-          align: "center"
-          
-        },
-        {
-          value: "passes",
-          text: "",
-          sortable: false,
-          align: "center"
-        },
-        {
-          value: "partidasClubesPartidas[0].passattempts",
-          text: "",
-          sortable: false,
-          align: "center"
-        },
-      ],
-      fieldsPosse: [
-        {
-          value: "partidasClubesPartidas[1].precisaoHome",
-          text: "",
-          sortable: false,
-          align: "center"
-        },
-        {
-          value: "posse",
-          text: "",
-          sortable: false,
-          align: "center"
-        },
-        {
-          value: "partidasClubesPartidas[0].precisaoAway",
-          text: "",
-          sortable: false,
-          align: "center"
-        },
-      ],
-      fieldsMembros: [
-        {
-          value: "membrosPartidasMembros.proName",
-          text: "Nome",
-          sortable: false,
-          align: "center" 
-        },
-        {
-          value: "passattempts",
-          text: "Tentativas de passe",
-          sortable: false,
-          align: "center"
-        },
-        {
-          value: "passesmade",
-          text: "Passes feitos",
-          sortable:false,
-          align: "center"
-        },
-        {
-          value: "shots",
-          text: "Chutes",
-          sortable:false,
-          align: "center"
-        },
-        {
-          value: "goals",
-          text: "Gols",
-          sortable:false,
-          align: "center"
-        },
-        {
-          value: "assists",
-          text: "Assistências",
-          sortable: false,
-          align: "center"
-        },
-        {
-          value: "mom",
-          text: "",
-          sortable: false,
-          align: "center"
-        },
-        {
-          value: "rating",
-          text: "Nota",
-          sortable: false,
-          align: "center"
-        }
-      ],
+
       opcoes: [],
       model: {
         opcoes: [],
@@ -255,9 +118,7 @@ export default {
     };
   },
   methods: {
-    showModal() {
-      this.$refs['my-modal'].show()
-    },
+
     async getPartida() {
       let partidaId = this.$route.params.partidaId;
       const response = await partidasService.getOne(partidaId)
@@ -455,17 +316,8 @@ div.card-body {
   text-align: center;
 }
 
-.homeName {
-  float:left
-}
-
-.awayName {
-  float: right
-}
-
-.matchResult {
-  position: absolute;
-  left: 50%
+.spanCenter {
+  float:center
 }
 
 .modal-body {

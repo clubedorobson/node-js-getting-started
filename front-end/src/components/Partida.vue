@@ -1,6 +1,6 @@
 <template>
   <div>
-    <header-partida v-if="tabelaPartida.length > 0" v-bind:items="tabelaPartida"></header-partida>
+    <header-partida v-if="tabelaPartida.length > 0" v-bind:items="tabelaPartida" :timestamp="partida.timestamp" :stadName="stadName"></header-partida>
     <!--<b-table  v-if="tabelaPartida.length > 0" :items="tabelaPartida" :fields="fieldsTimes">
       <template #cell(homeCrest)="data">
         <b-img
@@ -122,7 +122,10 @@ export default {
     async getPartida() {
       let partidaId = this.$route.params.partidaId;
       const response = await partidasService.getOne(partidaId)
+      
       this.partida = response.data[0]
+
+      this.stadName = this.partida.partidasHomeClub.stadname
       this.partida["passes"] = "Passes";
       this.partida["posse"] = "Posse de bola";
       this.partida["chutes"] = "Chutes";
@@ -216,7 +219,6 @@ export default {
         }
       ];
 
-      console.log("MEMBROSPARTIDAS", this.partida.partidasMembrosPartidas)
       this.partida.partidasMembrosPartidas.forEach(membro => {
         if (membro.clubid == homeClubStats.clubId) {
           this.membrosHome.push(membro)
@@ -239,7 +241,7 @@ export default {
 
       let membroResgatado = null
       this.membrosRobson.forEach((membro, i) => {
-        console.log("MEMBRO, ROBSONER",membro, this.robsoners)
+        
         membroResgatado = this.robsoners.find(
           (robsoner) => robsoner.name == membro.name
         );
@@ -248,12 +250,9 @@ export default {
         if (membroResgatado){
           this.membrosRobson[i]["face"] = membroResgatado.face
         }
-        console.log(this.membrosRobson);
       });
           
-      console.log(this.partida);
       this.tabelaPartida = [this.partida];
-      console.log(this.tabelaPartida[0])
     },
 
     getSquadImage () {

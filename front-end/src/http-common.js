@@ -4,7 +4,7 @@ import axios from "axios";
 //baseURL: /api for build
 
 export default axios.create({
-  baseURL: "/api",
+  baseURL: "http://localhost:5000/api",
   headers: {
     "Content-type": "application/json"
   }

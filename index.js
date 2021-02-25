@@ -48,6 +48,7 @@ require("./app/routes/membrosPartidas")(app);
 require("./app/routes/partidas")(app);
 require("./app/routes/robsoners")(app);
 require("./app/routes/seasonals")(app);
+require("./app/routes/stadiums")(app);
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`))
 
